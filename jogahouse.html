@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Joga House · Remodelación 2026–2028</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  :root{
+    --bg:#fbf7ee;            /* crema */
+    --card:#ffffff;
+    --ink:#2c2620;           /* texto principal */
+    --muted:#7d7266;         /* texto secundario */
+    --line:rgba(60,48,36,.12);
+    --verde:#2f8b57;         /* serie 1 — validada */
+    --cafe:#a05a2c;          /* serie 2 — validada */
+    --verde-pastel:#dcebd8;  /* acento de marca */
+    --cafe-pastel:#ecdfcd;   /* acento de marca */
+    --verde-oscuro:#20603c;
+    --cafe-oscuro:#6e3d1c;
+  }
+  body{background:var(--bg);font-family:Inter,system-ui,sans-serif;color:var(--ink);line-height:1.55}
+  button,input{font-family:inherit}
+  h1,h2,h3{font-family:Newsreader,Georgia,serif;line-height:1.15;margin:0}
+  .wrap{max-width:1060px;margin:0 auto;padding:28px 20px 80px}
+
+  /* ---------- header ---------- */
+  header.hero{
+    background:linear-gradient(135deg,var(--verde-pastel),var(--cafe-pastel));
+    border-radius:24px;padding:36px 32px;position:relative;overflow:hidden;
+    border:1px solid var(--line);
+  }
+  header.hero .kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--cafe-oscuro);font-weight:600}
+  header.hero h1{font-size:clamp(34px,6vw,52px);color:var(--verde-oscuro);margin:8px 0 6px}
+  header.hero p{max-width:640px;margin:6px 0 0;color:var(--ink)}
+  .hero-house{position:absolute;right:22px;bottom:-6px;width:190px;opacity:.9}
+  @media (max-width:720px){.hero-house{display:none}}
+
+  /* ---------- tiles ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:16px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+  .tile .lbl{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+  .tile .val{font-family:Newsreader,Georgia,serif;font-size:28px;font-weight:600;margin-top:4px}
+  .tile .sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .tile.green{background:linear-gradient(180deg,#ffffff, var(--verde-pastel))}
+  .tile.brown{background:linear-gradient(180deg,#ffffff, var(--cafe-pastel))}
+
+  /* ---------- sections / cards ---------- */
+  section{margin-top:34px}
+  section > h2{font-size:26px;color:var(--verde-oscuro)}
+  section > .desc{color:var(--muted);margin:6px 0 14px;max-width:720px;font-size:14.5px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+
+  /* ---------- controls ---------- */
+  .controls{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:6px}
+  .ctrl label{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px}
+  .ctrl input{width:130px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fffdf8;color:var(--ink)}
+  .ctrl input:focus{outline:2px solid var(--verde);outline-offset:1px}
+  .hint{font-size:12px;color:var(--muted)}
+
+  /* ---------- deposit grid ---------- */
+  .year-h{font-size:14px;font-weight:700;color:var(--cafe-oscuro);margin:16px 0 8px;letter-spacing:.06em}
+  .dep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+  .dep{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#fffdf8;cursor:pointer;text-align:left;transition:transform .1s ease,background .15s ease}
+  .dep:active{transform:scale(.97)}
+  .dep .d{font-size:12.5px;font-weight:600}
+  .dep .m{font-size:11px;color:var(--muted)}
+  .dep.done{background:var(--verde-pastel);border-color:var(--verde)}
+  .dep.done .d::after{content:" ✓";color:var(--verde-oscuro);font-weight:700}
+  .dep.past:not(.done){border-color:var(--cafe);background:#fdf3ea}
+  .legend-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--muted)}
+  .legend-row .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+  /* ---------- charts ---------- */
+  .chart-box{position:relative;overflow-x:auto}
+  .chart-box svg{display:block;width:100%;height:auto;min-width:560px}
+  .tip{position:absolute;pointer-events:none;background:#fff;border:1px solid var(--line);border-radius:10px;
+       box-shadow:0 8px 24px -10px rgba(44,38,32,.35);padding:8px 11px;font-size:12.5px;display:none;z-index:5;min-width:150px}
+  .tip .t-d{font-weight:700;margin-bottom:2px}
+  .tip .t-r{display:flex;justify-content:space-between;gap:12px;color:var(--muted)}
+  .tip .t-r b{color:var(--ink);font-weight:600}
+
+  /* ---------- credit timeline ---------- */
+  .steps{display:grid;gap:0;margin-top:6px}
+  .step{display:grid;grid-template-columns:44px 1fr;gap:14px;position:relative;padding-bottom:22px}
+  .step::before{content:"";position:absolute;left:21px;top:44px;bottom:0;width:2px;background:var(--line)}
+  .step:last-child::before{display:none}
+  .step .dot{width:44px;height:44px;border-radius:50%;background:var(--verde-pastel);border:2px solid var(--verde);
+             display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--verde-oscuro);font-size:13px}
+  .step.brown .dot{background:var(--cafe-pastel);border-color:var(--cafe);color:var(--cafe-oscuro)}
+  .step h3{font-size:17px;margin-bottom:3px}
+  .step p{margin:0;font-size:14px;color:var(--muted);max-width:640px}
+  .step .when{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cafe)}
+
+  /* ---------- remodel phases ---------- */
+  .phase-note{font-size:13px;color:var(--muted);margin-top:10px}
+
+  /* ---------- style options ---------- */
+  .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .opt{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+  .opt .fig{background:linear-gradient(180deg,#f2ede2,var(--verde-pastel));padding:14px 14px 0}
+  .opt .fig svg{display:block;width:100%;height:auto}
+  .opt .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:7px;flex:1}
+  .opt h3{font-size:19px;color:var(--cafe-oscuro)}
+  .opt p{margin:0;font-size:13.5px;color:var(--muted)}
+  .opt ul{margin:0;padding-left:17px;font-size:13px;color:var(--ink)}
+  .opt li{margin:2px 0}
+  .opt .cost{margin-top:auto;padding-top:8px;font-size:13px;font-weight:600;color:var(--verde-oscuro)}
+  .badge{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+         background:var(--verde-pastel);color:var(--verde-oscuro);border-radius:999px;padding:3px 10px}
+
+  /* ---------- joga flow ---------- */
+  .flow-card{background:linear-gradient(135deg,#fffdf8,var(--cafe-pastel));border:1px dashed var(--cafe);border-radius:18px;padding:20px;
+             display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
+  .soon{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--cafe);color:#fff;border-radius:999px;padding:4px 11px}
+
+  footer{margin-top:44px;font-size:12px;color:var(--muted);text-align:center}
+  .disclaimer{font-size:12px;color:var(--muted);margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ======================= HERO ======================= -->
+  <header class="hero">
+    <div class="kicker">Proyecto Joga · Plan a 2 años</div>
+    <h1>Joga House</h1>
+    <p>Plan de ahorro y remodelación de casa. Depósitos de <b>$700 USD</b> los días <b>1 y 15 de cada mes</b> en
+       <b>BBVA (Bancomer), México</b>, convertidos a pesos, para construir historial de crédito y financiar la obra.</p>
+    <p style="font-size:13px;color:var(--cafe-oscuro);margin-top:10px"><b>Inicio:</b> 13 de julio de 2026 &nbsp;·&nbsp; <b>Meta:</b> julio de 2028</p>
+    <svg class="hero-house" viewBox="0 0 200 130" aria-hidden="true">
+      <rect x="30" y="60" width="140" height="62" rx="4" fill="#fffdf8" stroke="#a05a2c" stroke-width="2.5"/>
+      <path d="M20 62 L100 14 L180 62 Z" fill="#a05a2c" opacity=".85"/>
+      <rect x="88" y="86" width="26" height="36" rx="3" fill="#2f8b57"/>
+      <rect x="45" y="76" width="24" height="20" rx="2" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+      <rect x="131" y="76" width="24" height="20" rx="2" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+      <rect x="140" y="26" width="12" height="24" fill="#6e3d1c"/>
+    </svg>
+  </header>
+
+  <!-- ======================= STAT TILES ======================= -->
+  <div class="tiles" id="tiles"></div>
+
+  <!-- ======================= CONFIG ======================= -->
+  <section>
+    <div class="card">
+      <div class="controls">
+        <div class="ctrl">
+          <label for="fx">Tipo de cambio (MXN por USD)</label>
+          <input id="fx" type="number" step="0.01" min="1">
+        </div>
+        <div class="ctrl">
+          <label for="dep">Depósito quincenal (USD)</label>
+          <input id="dep" type="number" step="10" min="0">
+        </div>
+        <div class="ctrl">
+          <label for="flowExtra">Extra mensual Joga Flow (USD)</label>
+          <input id="flowExtra" type="number" step="10" min="0">
+        </div>
+        <div class="hint">Ajusta el tipo de cambio al del día de tu depósito en Bancomer.<br>Todo se guarda automáticamente en este navegador.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 1. CALENDARIO DE PAGOS ======================= -->
+  <section>
+    <h2>1 · Calendario de depósitos (día 1 y 15)</h2>
+    <p class="desc">Son <b><span id="nDeps"></span> depósitos</b> en 2 años. Toca cada tarjeta cuando hagas el depósito en Bancomer
+       para marcarlo como realizado — así la gráfica de avance compara lo real contra lo planeado.</p>
+    <div class="card" id="depCard"></div>
+  </section>
+
+  <!-- ======================= 2. GRÁFICA DE AVANCE ======================= -->
+  <section>
+    <h2>2 · Avance del ahorro a 2 años</h2>
+    <p class="desc">Acumulado en pesos mexicanos. La línea <b style="color:var(--cafe)">café</b> es el plan proyectado;
+       la línea <b style="color:var(--verde)">verde</b> es tu avance real según los depósitos que marques. Pasa el cursor para ver cada quincena.</p>
+    <div class="card">
+      <div class="chart-box" id="growthBox">
+        <svg id="growthSvg" viewBox="0 0 920 380" role="img" aria-label="Gráfica de avance del ahorro acumulado en pesos a dos años"></svg>
+        <div class="tip" id="growthTip"></div>
+      </div>
+      <div class="legend-row" id="growthLegend"></div>
+      <details style="margin-top:12px">
+        <summary style="cursor:pointer;font-size:13px;color:var(--muted)">Ver tabla de hitos (25% · 50% · 75% · 100%)</summary>
+        <div id="milestoneTable" style="margin-top:8px;font-size:13.5px"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ======================= 3. CRÉDITO EN MÉXICO ======================= -->
+  <section>
+    <h2>3 · Ruta de crédito en México (Bancomer)</h2>
+    <p class="desc">El objetivo de depositar en México — y no aquí — es que en 2 años tengas <b>historial en el Buró de Crédito</b>
+       y el banco te vea como cliente confiable para financiar la obra. Esta es la ruta recomendada:</p>
+    <div class="card">
+      <div class="steps">
+        <div class="step"><div class="dot">M0</div><div>
+          <div class="when">Mes 0 — julio 2026</div>
+          <h3>Abrir cuenta en BBVA México y empezar los depósitos</h3>
+          <p>Cuenta de débito (p. ej. Libretón / cuenta digital BBVA). Deposita los $700 USD cada día 1 y 15 sin fallar:
+             la <b>constancia de depósitos regulares</b> es lo primero que revisa el banco.</p>
+        </div></div>
+        <div class="step brown"><div class="dot">M3</div><div>
+          <div class="when">Mes 3–6</div>
+          <h3>Primera tarjeta de crédito (garantizada o básica)</h3>
+          <p>Pide una tarjeta inicial (BBVA Crea o una tarjeta garantizada con depósito). Úsala poco (menos del 30% del límite)
+             y <b>págala completa cada mes</b>. Con esto empiezas a generar historial en el Buró de Crédito.</p>
+        </div></div>
+        <div class="step"><div class="dot">M6</div><div>
+          <div class="when">Mes 6–12</div>
+          <h3>Domiciliar pagos y cuidar el score</h3>
+          <p>Domicilia luz/agua/teléfono a la tarjeta. Revisa tu reporte gratuito en <b>burodecredito.com.mx</b> una vez al año.
+             Cero pagos tardíos: un solo atraso baja el score por meses.</p>
+        </div></div>
+        <div class="step brown"><div class="dot">M12</div><div>
+          <div class="when">Mes 12–18</div>
+          <h3>Subir límite y pre-evaluación</h3>
+          <p>Con un año de historial, pide aumento de límite y haz una <b>pre-evaluación de crédito</b> en la app BBVA.
+             Ahí ves cuánto te prestaría el banco sin afectar tu buró.</p>
+        </div></div>
+        <div class="step"><div class="dot">M24</div><div>
+          <div class="when">Mes 24 — julio 2028</div>
+          <h3>Solicitar el financiamiento de la obra</h3>
+          <p>Con ~<b><span class="goalMxn"></span></b> ahorrados como enganche + 2 años de historial, opciones reales:
+             <b>Préstamo Personal BBVA</b> (rápido, tasa mayor), <b>Crédito Hipotecario BBVA para remodelación</b>
+             (tasa menor, usa la casa como garantía) o <b>crédito de liquidez con garantía hipotecaria</b>.
+             Tu ahorro puede cubrir 40–60% de la obra y el crédito el resto.</p>
+        </div></div>
+      </div>
+      <p class="disclaimer">⚠️ Los nombres de productos y condiciones cambian: confirma tasas y requisitos directamente en BBVA México antes de firmar.
+      Si depositas desde EE. UU., considera la comisión y el tipo de cambio de la remesa (BBVA acepta transferencias internacionales SWIFT y remesas).</p>
+    </div>
+  </section>
+
+  <!-- ======================= 4. CÓMO SE HARÁ LA REMODELACIÓN ======================= -->
+  <section>
+    <h2>4 · Cómo se hará la remodelación</h2>
+    <p class="desc">La obra empieza al cumplir la meta (julio 2028) y dura aproximadamente <b>6 a 8 meses</b>.
+       Así se reparte el presupuesto por fase — pasa el cursor sobre cada barra para ver el monto estimado en pesos:</p>
+    <div class="card">
+      <div class="chart-box" id="phaseBox">
+        <svg id="phaseSvg" viewBox="0 0 920 330" role="img" aria-label="Distribución del presupuesto por fase de obra"></svg>
+        <div class="tip" id="phaseTip"></div>
+      </div>
+      <p class="phase-note">Orden de la obra: <b>proyecto y permisos → demolición → obra gris (muros, losas, techos) →
+      instalaciones (eléctrica, hidráulica, gas) → acabados (pisos, baños, cocina, pintura) → detalles finales</b>.
+      Siempre reserva ~10% para imprevistos: en casas viejas casi siempre aparecen sorpresas en cimientos o tuberías.</p>
+    </div>
+  </section>
+
+  <!-- ======================= 5. OPCIONES DE CASA TERMINADA ======================= -->
+  <section>
+    <h2>5 · Opciones reales: así se vería la casa terminada</h2>
+    <p class="desc">Cuatro estilos que funcionan muy bien para remodelar una casa antigua en México, con materiales y
+       rangos de costo reales por metro cuadrado (obra + acabados, precios 2026 aprox.):</p>
+    <div class="opts">
+
+      <div class="opt">
+        <div class="fig">
+          <svg viewBox="0 0 260 130" aria-hidden="true">
+            <rect x="18" y="40" width="150" height="82" rx="3" fill="#f5e8d7" stroke="#a05a2c" stroke-width="2"/>
+            <rect x="168" y="20" width="74" height="102" rx="3" fill="#fffdf8" stroke="#a05a2c" stroke-width="2"/>
+            <rect x="30" y="58" width="52" height="40" rx="2" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+            <rect x="100" y="58" width="52" height="64" rx="2" fill="#2f8b57"/>
+            <rect x="182" y="36" width="46" height="30" rx="2" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+            <rect x="182" y="80" width="46" height="42" rx="2" fill="#e9d3b8"/>
+            <rect x="18" y="34" width="150" height="8" fill="#a05a2c"/>
+            <circle cx="58" cy="122" r="10" fill="#2f8b57"/><rect x="55" y="118" width="6" height="14" fill="#6e3d1c"/>
+          </svg>
+        </div>
+        <div class="body">
+          <span class="badge">Recomendada</span>
+          <h3>Mexicano contemporáneo</h3>
+          <p>Muros lisos en tonos arena y blanco hueso, carpintería de madera cálida, herrería negra delgada, patio con vegetación.</p>
+          <ul>
+            <li>Piso porcelánico formato grande o cemento pulido</li>
+            <li>Cocina abierta con barra de granito o cuarzo</li>
+            <li>Baños con azulejo artesanal tipo talavera moderna</li>
+            <li>Iluminación cálida empotrada</li>
+          </ul>
+          <div class="cost">≈ $8,000 – $12,000 MXN/m²</div>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="fig">
+          <svg viewBox="0 0 260 130" aria-hidden="true">
+            <rect x="20" y="52" width="220" height="70" rx="3" fill="#fdf6ea" stroke="#a05a2c" stroke-width="2"/>
+            <path d="M12 54 L130 16 L248 54 Z" fill="#b3562a"/>
+            <path d="M60 122 L60 84 A24 24 0 0 1 108 84 L108 122 Z" fill="#e9d3b8" stroke="#a05a2c" stroke-width="2"/>
+            <path d="M150 122 L150 84 A24 24 0 0 1 198 84 L198 122 Z" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+            <rect x="118" y="60" width="24" height="16" rx="8" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="body">
+          <span class="badge" style="background:var(--cafe-pastel);color:var(--cafe-oscuro)">Clásica</span>
+          <h3>Hacienda moderna</h3>
+          <p>Arcos, techos con teja de barro, cantera o piedra en fachada, colores tierra. Ideal si la casa vieja tiene muros gruesos originales.</p>
+          <ul>
+            <li>Pisos de barro esmaltado o pasta tradicional</li>
+            <li>Vigas de madera vistas en sala y terraza</li>
+            <li>Portón de madera maciza y faroles de herrería</li>
+            <li>Patio central con fuente pequeña</li>
+          </ul>
+          <div class="cost">≈ $10,000 – $15,000 MXN/m²</div>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="fig">
+          <svg viewBox="0 0 260 130" aria-hidden="true">
+            <rect x="24" y="26" width="120" height="96" rx="2" fill="#e8e4dc" stroke="#7d7266" stroke-width="2"/>
+            <rect x="144" y="58" width="96" height="64" rx="2" fill="#fffdf8" stroke="#a05a2c" stroke-width="2"/>
+            <rect x="36" y="40" width="96" height="34" rx="1" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+            <rect x="36" y="84" width="42" height="38" rx="1" fill="#2f8b57"/>
+            <rect x="156" y="70" width="72" height="24" rx="1" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+            <rect x="144" y="50" width="96" height="8" fill="#a05a2c"/>
+            <rect x="88" y="84" width="44" height="6" fill="#a05a2c"/>
+          </svg>
+        </div>
+        <div class="body">
+          <span class="badge">Moderna</span>
+          <h3>Minimalista cálido</h3>
+          <p>Volúmenes rectos, concreto aparente combinado con madera, ventanales grandes de piso a techo, interiores despejados.</p>
+          <ul>
+            <li>Cancelería de aluminio negro con doble vidrio</li>
+            <li>Muros de concreto o aplanado fino gris claro</li>
+            <li>Closets y cocina de línea recta sin jaladeras</li>
+            <li>Terraza techada con deck</li>
+          </ul>
+          <div class="cost">≈ $9,000 – $14,000 MXN/m²</div>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="fig">
+          <svg viewBox="0 0 260 130" aria-hidden="true">
+            <rect x="24" y="48" width="212" height="74" rx="3" fill="#e7c9a4" stroke="#a05a2c" stroke-width="2"/>
+            <path d="M16 50 L130 14 L244 50 Z" fill="#6e3d1c"/>
+            <g stroke="#a05a2c" stroke-width="1.4" opacity=".65">
+              <line x1="24" y1="66" x2="236" y2="66"/><line x1="24" y1="84" x2="236" y2="84"/><line x1="24" y1="102" x2="236" y2="102"/>
+            </g>
+            <rect x="52" y="70" width="40" height="32" rx="2" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+            <rect x="168" y="70" width="40" height="32" rx="2" fill="#dcebd8" stroke="#2f8b57" stroke-width="2"/>
+            <rect x="114" y="76" width="32" height="46" rx="2" fill="#2f8b57"/>
+          </svg>
+        </div>
+        <div class="body">
+          <span class="badge" style="background:var(--cafe-pastel);color:var(--cafe-oscuro)">Económica</span>
+          <h3>Rústico moderno</h3>
+          <p>Ladrillo o tabique aparente (aprovecha muros existentes), vigas recuperadas, mezcla de texturas. El estilo con mejor costo-beneficio.</p>
+          <ul>
+            <li>Muro original limpio y sellado como acabado</li>
+            <li>Pisos de concreto pulido con tapetes</li>
+            <li>Repisas y puertas de madera recuperada</li>
+            <li>Plantas colgantes y luz cálida tipo Edison</li>
+          </ul>
+          <div class="cost">≈ $6,000 – $9,500 MXN/m²</div>
+        </div>
+      </div>
+
+    </div>
+    <p class="disclaimer">Referencia: una remodelación integral de una casa de <b>120 m²</b> costaría entre
+    <b>$720,000</b> (rústico moderno básico) y <b>$1,800,000 MXN</b> (hacienda moderna con acabados altos).
+    Tu ahorro de 2 años (<b><span class="goalMxn"></span></b>) + crédito bancario cubre bien el rango medio.
+    Pide siempre 3 presupuestos a contratistas con obras comprobables.</p>
+  </section>
+
+  <!-- ======================= 6. JOGA FLOW ======================= -->
+  <section>
+    <h2>6 · Otras fuentes: Joga Flow</h2>
+    <div class="flow-card">
+      <div style="max-width:560px">
+        <span class="soon">Próximamente</span>
+        <h3 style="margin-top:10px;font-size:22px;color:var(--cafe-oscuro)">Joga Flow — ingreso adicional para la casa</h3>
+        <p style="font-size:14px;color:var(--muted);margin:6px 0 0">Cuando Joga Flow arranque, sus ingresos se sumarán a este plan.
+        Ya puedes simularlo: escribe un monto en el campo <b>“Extra mensual Joga Flow”</b> de arriba y la gráfica de avance
+        mostrará cuánto adelantarías la meta.</p>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Con Joga Flow llegarías a</div>
+        <div id="flowTotal" style="font-family:Newsreader,Georgia,serif;font-size:30px;font-weight:700;color:var(--verde-oscuro)">—</div>
+        <div id="flowDelta" style="font-size:12.5px;color:var(--cafe-oscuro)"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Joga House · Proyecto de la familia Joga · 2026–2028 · Los montos en pesos dependen del tipo de cambio del día del depósito.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= configuración base ================= */
+  var START = new Date(2026, 6, 13);            // 13 jul 2026 (inicio del proyecto)
+  var END   = new Date(2028, 6, 13);            // 13 jul 2028 (2 años)
+  var LS = {
+    fx:   "jogahouse.fx",
+    dep:  "jogahouse.dep",
+    flow: "jogahouse.flow",
+    done: "jogahouse.done"
+  };
+
+  function lsGet(k, dflt){ try{ var v = localStorage.getItem(k); return v===null ? dflt : JSON.parse(v); }catch(e){ return dflt; } }
+  function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+
+  var state = {
+    fx:   lsGet(LS.fx, 18.70),                  // MXN por USD (editable)
+    dep:  lsGet(LS.dep, 700),                   // USD por depósito
+    flow: lsGet(LS.flow, 0),                    // USD extra al mes (Joga Flow)
+    done: lsGet(LS.done, [])                    // fechas ISO de depósitos hechos
+  };
+
+  /* ================= calendario de depósitos (1 y 15) ================= */
+  function buildSchedule(){
+    var out = [], d = new Date(START.getFullYear(), START.getMonth(), 1);
+    while (d <= END) {
+      [1, 15].forEach(function(day){
+        var dt = new Date(d.getFullYear(), d.getMonth(), day);
+        if (dt >= START && dt <= END) out.push(dt);
+      });
+      d = new Date(d.getFullYear(), d.getMonth()+1, 1);
+    }
+    return out;
+  }
+  var SCHEDULE = buildSchedule();
+
+  var MESES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function fmtDate(d){ return d.getDate()+" "+MESES[d.getMonth()]+" "+d.getFullYear(); }
+  function usd(n){ return "$"+n.toLocaleString("en-US", {maximumFractionDigits:0})+" USD"; }
+  function mxn(n){ return "$"+Math.round(n).toLocaleString("es-MX")+" MXN"; }
+  function mxnShort(n){ return n >= 1e6 ? "$"+(n/1e6).toFixed(2)+" M" : "$"+Math.round(n/1000)+" mil"; }
+
+  /* ================= totales ================= */
+  function totals(){
+    var months = 24;
+    var totalUsd  = SCHEDULE.length * state.dep;
+    var flowUsd   = state.flow * months;
+    var doneSet   = {}; state.done.forEach(function(k){ doneSet[k]=1; });
+    var doneCount = SCHEDULE.filter(function(d){ return doneSet[iso(d)]; }).length;
+    return {
+      totalUsd: totalUsd,
+      totalMxn: totalUsd * state.fx,
+      flowUsd: flowUsd,
+      grandUsd: totalUsd + flowUsd,
+      grandMxn: (totalUsd + flowUsd) * state.fx,
+      doneCount: doneCount,
+      doneUsd: doneCount * state.dep,
+      doneMxn: doneCount * state.dep * state.fx,
+      doneSet: doneSet
+    };
+  }
+
+  /* ================= tiles ================= */
+  function renderTiles(){
+    var t = totals();
+    var next = SCHEDULE.find(function(d){ return !t.doneSet[iso(d)]; });
+    var pct = Math.round(100 * t.doneCount / SCHEDULE.length);
+    document.getElementById("tiles").innerHTML =
+      tile("Meta en 2 años", usd(t.totalUsd), "≈ "+mxn(t.totalMxn), "green") +
+      tile("Depósitos", t.doneCount+" / "+SCHEDULE.length, pct+"% completado", "") +
+      tile("Ahorrado hasta hoy", usd(t.doneUsd), "≈ "+mxn(t.doneMxn), "brown") +
+      tile("Próximo depósito", next ? fmtDate(next) : "¡Meta cumplida!", usd(state.dep)+" → Bancomer", "");
+    document.querySelectorAll(".goalMxn").forEach(function(el){ el.textContent = mxn(t.totalMxn); });
+  }
+  function tile(lbl, val, sub, cls){
+    return '<div class="tile '+cls+'"><div class="lbl">'+lbl+'</div><div class="val">'+val+'</div><div class="sub">'+sub+'</div></div>';
+  }
+
+  /* ================= grid de depósitos ================= */
+  function renderDeposits(){
+    var t = totals(), today = new Date();
+    var byYear = {};
+    SCHEDULE.forEach(function(d){ (byYear[d.getFullYear()] = byYear[d.getFullYear()] || []).push(d); });
+    var html = "";
+    Object.keys(byYear).sort().forEach(function(y){
+      html += '<div class="year-h">'+y+'</div><div class="dep-grid">';
+      byYear[y].forEach(function(d){
+        var k = iso(d), done = !!t.doneSet[k], past = d < today;
+        html += '<button type="button" class="dep'+(done?" done":"")+(past?" past":"")+'" data-k="'+k+'" '+
+                'aria-pressed="'+done+'" title="'+(done?"Depósito realizado":"Marcar como depositado")+'">'+
+                '<div class="d">'+fmtDate(d)+'</div>'+
+                '<div class="m">$'+state.dep+' USD ≈ '+mxn(state.dep*state.fx)+'</div></button>';
+      });
+      html += '</div>';
+    });
+    html += '<div class="legend-row">'+
+      '<span><span class="sw" style="background:var(--verde-pastel);border:1px solid var(--verde)"></span>Depositado</span>'+
+      '<span><span class="sw" style="background:#fdf3ea;border:1px solid var(--cafe)"></span>Vencido sin marcar</span>'+
+      '<span><span class="sw" style="background:#fffdf8;border:1px solid var(--line)"></span>Pendiente</span></div>';
+    var card = document.getElementById("depCard");
+    card.innerHTML = html;
+    card.querySelectorAll(".dep").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var k = btn.getAttribute("data-k"), i = state.done.indexOf(k);
+        if (i >= 0) state.done.splice(i,1); else state.done.push(k);
+        lsSet(LS.done, state.done);
+        renderAll();
+      });
+    });
+    document.getElementById("nDeps").textContent = SCHEDULE.length;
+  }
+
+  /* ================= gráfica de avance (SVG) ================= */
+  var G = { w:920, h:380, l:86, r:24, t:26, b:44 };
+
+  function growthSeries(){
+    var t = totals(), plan = [], real = [], cum = 0, cumR = 0;
+    var flowPerDeposit = (state.flow * 24) / SCHEDULE.length; // extra repartido por quincena
+    SCHEDULE.forEach(function(d){
+      cum += (state.dep + flowPerDeposit) * state.fx;
+      plan.push({ d:d, v:cum });
+      if (t.doneSet[iso(d)]) { cumR += state.dep * state.fx; real.push({ d:d, v:cumR }); }
+    });
+    return { plan:plan, real:real, goal:cum };
+  }
+
+  function xPos(d){ return G.l + (G.w-G.l-G.r) * (d - START) / (END - START); }
+
+  function renderGrowth(){
+    var s = growthSeries();
+    var yMax = s.goal * 1.06;
+    function y(v){ return G.t + (G.h-G.t-G.b) * (1 - v/yMax); }
+
+    var svg = "";
+    // rejilla horizontal recesiva + etiquetas Y (25/50/75/100% de la meta)
+    [0.25,0.5,0.75,1].forEach(function(p){
+      var v = s.goal*p, yy = y(v);
+      svg += '<line x1="'+G.l+'" y1="'+yy+'" x2="'+(G.w-G.r)+'" y2="'+yy+'" stroke="rgba(60,48,36,.10)" stroke-width="1"/>';
+      svg += '<text x="'+(G.l-10)+'" y="'+(yy+4)+'" text-anchor="end" font-size="12" fill="#7d7266">'+mxnShort(v)+'</text>';
+    });
+    // eje X: cada 6 meses
+    for (var m=0; m<=24; m+=6){
+      var d = new Date(START.getFullYear(), START.getMonth()+m, START.getDate());
+      var xx = xPos(d);
+      svg += '<line x1="'+xx+'" y1="'+(G.h-G.b)+'" x2="'+xx+'" y2="'+(G.h-G.b+5)+'" stroke="rgba(60,48,36,.3)"/>';
+      svg += '<text x="'+xx+'" y="'+(G.h-G.b+22)+'" text-anchor="middle" font-size="12" fill="#7d7266">'+MESES[d.getMonth()]+' '+d.getFullYear()+'</text>';
+    }
+    svg += '<line x1="'+G.l+'" y1="'+(G.h-G.b)+'" x2="'+(G.w-G.r)+'" y2="'+(G.h-G.b)+'" stroke="rgba(60,48,36,.25)" stroke-width="1"/>';
+
+    // área + línea del plan (café)
+    var pts = s.plan.map(function(p){ return xPos(p.d)+","+y(p.v); });
+    var lastX = xPos(s.plan[s.plan.length-1].d);
+    svg += '<path d="M'+G.l+','+(G.h-G.b)+' L'+pts.join(" L")+' L'+lastX+','+(G.h-G.b)+' Z" fill="rgba(160,90,44,.10)"/>';
+    svg += '<path d="M '+pts.join(" L ")+'" fill="none" stroke="#a05a2c" stroke-width="2" stroke-linecap="round"/>';
+
+    // línea real (verde)
+    if (s.real.length){
+      var rpts = s.real.map(function(p){ return xPos(p.d)+","+y(p.v); });
+      svg += '<path d="M'+rpts.join(" L")+'" fill="none" stroke="#2f8b57" stroke-width="2.5" stroke-linecap="round"/>';
+      var last = s.real[s.real.length-1];
+      svg += '<circle cx="'+xPos(last.d)+'" cy="'+y(last.v)+'" r="4.5" fill="#2f8b57" stroke="#fff" stroke-width="2"/>';
+    }
+
+    // etiqueta directa de la meta (solo el punto final — etiquetado selectivo)
+    var end = s.plan[s.plan.length-1];
+    svg += '<circle cx="'+xPos(end.d)+'" cy="'+y(end.v)+'" r="4.5" fill="#a05a2c" stroke="#fff" stroke-width="2"/>';
+    svg += '<text x="'+(xPos(end.d)-8)+'" y="'+(y(end.v)-12)+'" text-anchor="end" font-size="13" font-weight="600" fill="#2c2620">Meta: '+mxn(end.v)+'</text>';
+
+    // capa de hover
+    svg += '<line id="ghCross" x1="0" y1="'+G.t+'" x2="0" y2="'+(G.h-G.b)+'" stroke="rgba(60,48,36,.35)" stroke-dasharray="3 3" style="display:none"/>';
+    svg += '<rect x="'+G.l+'" y="'+G.t+'" width="'+(G.w-G.l-G.r)+'" height="'+(G.h-G.t-G.b)+'" fill="transparent" id="ghHit"/>';
+
+    var el = document.getElementById("growthSvg");
+    el.innerHTML = svg;
+
+    document.getElementById("growthLegend").innerHTML =
+      '<span><span class="sw" style="background:#a05a2c"></span>Plan proyectado (con Joga Flow si aplica)</span>'+
+      '<span><span class="sw" style="background:#2f8b57"></span>Avance real (depósitos marcados)</span>';
+
+    // hitos
+    var rows = [0.25,0.5,0.75,1].map(function(p){
+      var target = s.goal*p, hit = s.plan.find(function(q){ return q.v >= target-1; });
+      return '<tr><td style="padding:3px 14px 3px 0;font-weight:600">'+Math.round(p*100)+'%</td>'+
+             '<td style="padding:3px 14px 3px 0">'+mxn(target)+'</td>'+
+             '<td style="padding:3px 0;color:var(--muted)">'+(hit?fmtDate(hit.d):"—")+'</td></tr>';
+    }).join("");
+    document.getElementById("milestoneTable").innerHTML =
+      '<table style="border-collapse:collapse"><tr style="color:var(--muted);font-size:12px;text-align:left">'+
+      '<th style="padding-right:14px">Hito</th><th style="padding-right:14px">Acumulado</th><th>Fecha estimada</th></tr>'+rows+'</table>';
+
+    bindGrowthHover(s, y);
+  }
+
+  function bindGrowthHover(s, y){
+    var box = document.getElementById("growthBox"),
+        svgEl = document.getElementById("growthSvg"),
+        tip = document.getElementById("growthTip"),
+        cross = document.getElementById("ghCross"),
+        hit = document.getElementById("ghHit");
+    function onMove(ev){
+      var r = svgEl.getBoundingClientRect();
+      var sx = G.w / r.width;
+      var mx = (ev.clientX - r.left) * sx;
+      var best = null, bd = 1e9;
+      s.plan.forEach(function(p, i){
+        var d = Math.abs(xPos(p.d) - mx);
+        if (d < bd){ bd = d; best = i; }
+      });
+      if (best === null) return;
+      var p = s.plan[best];
+      var t = totals();
+      var isDone = !!t.doneSet[iso(p.d)];
+      cross.style.display = "block";
+      cross.setAttribute("x1", xPos(p.d)); cross.setAttribute("x2", xPos(p.d));
+      tip.style.display = "block";
+      tip.innerHTML = '<div class="t-d">Depósito '+(best+1)+' · '+fmtDate(p.d)+'</div>'+
+        '<div class="t-r"><span>Quincena</span><b>'+usd(state.dep)+' ≈ '+mxn(state.dep*state.fx)+'</b></div>'+
+        '<div class="t-r"><span>Acumulado plan</span><b>'+mxn(p.v)+'</b></div>'+
+        '<div class="t-r"><span>Estado</span><b>'+(isDone?"✓ Depositado":(p.d < new Date() ? "Vencido":"Pendiente"))+'</b></div>';
+      var bx = box.getBoundingClientRect();
+      var left = (xPos(p.d)/sx) + 14;
+      if (left + tip.offsetWidth > bx.width - 8) left = (xPos(p.d)/sx) - tip.offsetWidth - 14;
+      tip.style.left = left+"px";
+      tip.style.top = Math.max(4, (y(p.v) / G.h) * r.height - 30) + "px";
+    }
+    hit.addEventListener("mousemove", onMove);
+    hit.addEventListener("mouseleave", function(){ tip.style.display="none"; cross.style.display="none"; });
+  }
+
+  /* ================= gráfica de fases (barras horizontales) ================= */
+  var PHASES = [
+    { n:"Proyecto y permisos",              p:0.05, dur:"4–6 semanas" },
+    { n:"Demolición y preparación",         p:0.08, dur:"2–3 semanas" },
+    { n:"Obra gris (muros, losas, techos)", p:0.27, dur:"8–10 semanas" },
+    { n:"Instalaciones (luz, agua, gas)",   p:0.18, dur:"4–6 semanas" },
+    { n:"Acabados (pisos, baños, cocina)",  p:0.30, dur:"8–10 semanas" },
+    { n:"Detalles y limpieza final",        p:0.02, dur:"1–2 semanas" },
+    { n:"Imprevistos (reserva)",            p:0.10, dur:"—" }
+  ];
+
+  function renderPhases(){
+    var t = totals();
+    var W = 920, rowH = 40, top = 14, left = 268, right = 130;
+    var H = top + PHASES.length*rowH + 20;
+    var maxP = Math.max.apply(null, PHASES.map(function(x){ return x.p; }));
+    var svg = "";
+    PHASES.forEach(function(ph, i){
+      var yy = top + i*rowH;
+      var bw = (W-left-right) * ph.p / maxP;
+      var amt = t.grandMxn * ph.p;
+      svg += '<text x="'+(left-12)+'" y="'+(yy+21)+'" text-anchor="end" font-size="13" fill="#2c2620">'+ph.n+'</text>';
+      svg += '<rect class="phbar" data-i="'+i+'" x="'+left+'" y="'+(yy+6)+'" width="'+Math.max(bw,4)+'" height="22" rx="4" fill="#2f8b57"/>';
+      svg += '<text x="'+(left+Math.max(bw,4)+10)+'" y="'+(yy+21)+'" font-size="13" font-weight="600" fill="#2c2620">'+Math.round(ph.p*100)+'% · '+mxnShort(amt)+'</text>';
+    });
+    var el = document.getElementById("phaseSvg");
+    el.setAttribute("viewBox", "0 0 "+W+" "+H);
+    el.innerHTML = svg;
+
+    var box = document.getElementById("phaseBox"), tip = document.getElementById("phaseTip");
+    el.querySelectorAll(".phbar").forEach(function(bar){
+      bar.addEventListener("mousemove", function(ev){
+        var ph = PHASES[+bar.getAttribute("data-i")];
+        var t2 = totals();
+        tip.style.display = "block";
+        tip.innerHTML = '<div class="t-d">'+ph.n+'</div>'+
+          '<div class="t-r"><span>Presupuesto</span><b>'+mxn(t2.grandMxn*ph.p)+'</b></div>'+
+          '<div class="t-r"><span>Porcentaje</span><b>'+Math.round(ph.p*100)+'%</b></div>'+
+          '<div class="t-r"><span>Duración</span><b>'+ph.dur+'</b></div>';
+        var bx = box.getBoundingClientRect();
+        var lx = ev.clientX - bx.left + 14;
+        if (lx + tip.offsetWidth > bx.width - 8) lx = ev.clientX - bx.left - tip.offsetWidth - 14;
+        tip.style.left = lx+"px";
+        tip.style.top  = (ev.clientY - bx.top - 40)+"px";
+      });
+      bar.addEventListener("mouseleave", function(){ tip.style.display="none"; });
+    });
+  }
+
+  /* ================= joga flow ================= */
+  function renderFlow(){
+    var t = totals();
+    document.getElementById("flowTotal").textContent = mxn(t.grandMxn);
+    document.getElementById("flowDelta").textContent = state.flow > 0
+      ? "+"+mxn(t.flowUsd*state.fx)+" extra sobre el plan base"
+      : "Escribe un monto arriba para simular";
+  }
+
+  /* ================= inputs ================= */
+  function bindInputs(){
+    var fx = document.getElementById("fx"), dep = document.getElementById("dep"), fl = document.getElementById("flowExtra");
+    fx.value = state.fx; dep.value = state.dep; fl.value = state.flow;
+    fx.addEventListener("input", function(){ var v = parseFloat(fx.value); if (v>0){ state.fx=v; lsSet(LS.fx,v); renderAll(); } });
+    dep.addEventListener("input", function(){ var v = parseFloat(dep.value); if (v>=0){ state.dep=v; lsSet(LS.dep,v); renderAll(); } });
+    fl.addEventListener("input", function(){ var v = parseFloat(fl.value); if (v>=0){ state.flow=v; lsSet(LS.flow,v); renderAll(); } });
+  }
+
+  function renderAll(){
+    renderTiles();
+    renderDeposits();
+    renderGrowth();
+    renderPhases();
+    renderFlow();
+  }
+
+  bindInputs();
+  renderAll();
+})();
+</script>
+</body>
+</html>
